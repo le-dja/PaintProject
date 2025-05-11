@@ -1,0 +1,31 @@
+name: Symfony CI
+
+on:
+  push:
+    branches:
+      - main # Déclenche l'action lorsqu'il y a un push sur la branche main
+  pull_request:
+    branches:
+      - main # Déclenche l'action lors de la création ou mise à jour d'une PR vers la branche main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # Utilisation de l'environnement Ubuntu
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2 # Récupère le code du dépôt
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2 # Configure PHP
+        with:
+          php-version: "8.0" # Version PHP à utiliser
+          extensions: mbstring, intl, xml, curl # Extensions PHP nécessaires pour Symfony
+
+      - name: Install dependencies
+        run: |
+          composer install --no-progress --no-suggest  # Installe les dépendances via Composer
+
+      - name: Run Symfony tests
+        run: |
+          ./vendor/bin/phpunit  # Lance les tests unitaires avec PHPUnit
